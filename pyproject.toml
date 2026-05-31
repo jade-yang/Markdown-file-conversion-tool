@@ -24,3 +24,6 @@ mdconvert-web = "markdown_converter.web_api:run"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.vercel]
+entrypoint = "src.markdown_converter.web_api:app"
