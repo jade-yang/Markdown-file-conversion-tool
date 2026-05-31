@@ -1,0 +1,14 @@
+services:
+  markdown-converter:
+    build: .
+    container_name: markdown-converter
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - markdown_converter_tmp:/tmp/markdown-converter
+
+volumes:
+  markdown_converter_tmp:

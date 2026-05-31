@@ -1,0 +1,44 @@
+# Git
+.git
+.github
+
+# Python
+venv
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+*.egg-info
+dist
+build
+.eggs
+
+# Node
+web/node_modules
+web/dist
+
+# IDE
+.vscode
+.idea
+*.suo
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*
+.output
+
+# Project-specific
+.workbuddy
+.codegraph
+.cursor
+
+# Docker (keep docker/*.conf for build)
+Dockerfile
+docker-compose.yml
+.dockerignore

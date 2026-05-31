@@ -207,6 +207,67 @@ Job statuses: `queued` → `running` → `success` | `failed`
 
 ---
 
+## Docker
+
+### Quick start
+
+```bash
+docker compose up -d
+```
+
+Then open `http://localhost:8080`.
+
+### Commands
+
+```bash
+docker compose up -d              # Start in background
+docker compose up -d --build      # Rebuild and start
+docker compose logs -f            # Follow logs
+docker compose down               # Stop and remove container
+docker compose down -v            # Stop and remove everything (incl. volumes)
+```
+
+### Without Docker Compose
+
+```bash
+docker build -t markdown-converter .
+docker run -p 8080:80 markdown-converter
+```
+
+### Architecture (inside container)
+
+```
+┌────────────────────────────────────────────────────┐
+│  Docker Container (markdown-converter)             │
+│                                                    │
+│  ┌─────────┐    /api/    ┌──────────────────────┐ │
+│  │  Nginx  │ ──────────> │  Gunicorn + Uvicorn  │ │
+│  │  :80    │             │  127.0.0.1:8000       │ │
+│  │         │             │  FastAPI web_api.py   │ │
+│  │  Static │             └──────────────────────┘ │
+│  │  dist/  │                                      │
+│  └─────────┘                                      │
+│                                                    │
+│  supervisor (nginx + gunicorn)                     │
+└────────────────────────────────────────────────────┘
+```
+
+### Production with domain (md.906100.xyz)
+
+```yaml
+# docker-compose.prod.yml
+services:
+  markdown-converter:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"    # local only
+```
+
+Then configure your host Nginx/Caddy to reverse proxy `md.906100.xyz → 127.0.0.1:8080` with HTTPS.
+
+---
+
 ## Troubleshooting
 
 ### 页面空白 (Blank page)
