@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import type { Lang } from "./lib/i18n";
 import { t, loadLang, saveLang } from "./lib/i18n";
 import { fileId, getExt } from "./lib/file";
@@ -11,7 +11,9 @@ import { SkeletonCard, SkeletonFileItem, SkeletonResultItem } from "./components
 import FeedbackModal from "./components/FeedbackModal";
 import HelpCenter from "./components/HelpCenter";
 
+import Landing from "./pages/Landing";
 import Header from "./components/Header";
+import SeoContent from "./components/SeoContent";
 import DashboardStats from "./components/DashboardStats";
 import FileDropzone from "./components/FileDropzone";
 import FileList from "./components/FileList";
@@ -21,24 +23,29 @@ import ResultPanel from "./components/ResultPanel";
 import MarkdownPreview from "./components/MarkdownPreview";
 import LogPanel from "./components/LogPanel";
 
+type Page = "landing" | "converter";
+
 export default function App() {
-  // --- Language ---
+  // ---- Page routing ----
+  const [page, setPage] = useState<Page>("landing");
+
+  // ---- Language ----
   const [lang, setLang] = useState<Lang>(() => loadLang());
   const handleLangChange = (l: Lang) => { setLang(l); saveLang(l); };
 
-  // --- Help Center ---
+  // ---- Help Center ----
   const [helpOpen, setHelpOpen] = useState(false);
 
-  // --- Checklist tracking ---
+  // ---- Checklist tracking ----
   const [hasUploaded, setHasUploaded] = useState(false);
   const [hasConverted, setHasConverted] = useState(false);
   const [hasDownloaded, setHasDownloaded] = useState(false);
 
-  // --- Settings with persistence ---
+  // ---- Settings with persistence ----
   const [settings, setSettings] = useState<Settings>(() => loadSettings());
   useEffect(() => { saveSettings(settings); }, [settings]);
 
-  // --- Files ---
+  // ---- Files ----
   const [files, setFiles] = useState<FileItem[]>([]);
   const addFiles = useCallback((newFiles: File[]) => {
     setHasUploaded(true);
@@ -56,7 +63,7 @@ export default function App() {
     setZipResult(null); setCurrentFile(""); setProgress(0); setError(null);
   };
 
-  // --- Job state ---
+  // ---- Job state ----
   const [jobPhase, setJobPhase] = useState<JobPhase>("idle");
   const [progress, setProgress] = useState(0);
   const [currentFile, setCurrentFile] = useState("");
@@ -66,37 +73,35 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [retrying, setRetrying] = useState(false);
 
-  // --- UI state ---
+  // ---- UI state ----
   const [logsExpanded, setLogsExpanded] = useState(true);
   const [previewResult, setPreviewResult] = useState<JobResult | null>(null);
   const [previewContent, setPreviewContent] = useState("");
   const [loadingState, setLoadingState] = useState<"idle" | "uploading" | "converting">("idle");
   const [feedbackOpen, setFeedbackOpen] = useState(false);
 
-  // --- Overwrite confirmation ---
+  // ---- Overwrite confirmation ----
   const [overwriteConfirmOpen, setOverwriteConfirmOpen] = useState(false);
 
-  // --- History ---
+  // ---- History ----
   const [history, setHistory] = useState<HistoryEntry[]>(() => loadHistory());
   const [showHistory, setShowHistory] = useState(false);
 
-  // --- Template ---
+  // ---- Template ----
   const templateExists = hasTemplate();
 
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => () => { if (pollingRef.current) clearInterval(pollingRef.current); }, []);
 
-  // --- Keyboard shortcuts ---
+  // ---- Keyboard shortcuts ----
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      // Ctrl+O → open file dialog
       if ((e.ctrlKey || e.metaKey) && e.key === "o") {
         e.preventDefault();
         const input = document.querySelector<HTMLInputElement>('input[type="file"]');
         input?.click();
       }
-      // Ctrl+Enter → start conversion
       if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
         e.preventDefault();
         handleStart();
@@ -106,7 +111,7 @@ export default function App() {
     return () => window.removeEventListener("keydown", handler);
   }, [files, settings, lang]);
 
-  // --- Start conversion (may show overwrite confirmation) ---
+  // ---- Start conversion (may show overwrite confirmation) ----
   const handleStart = () => {
     if (settings.overwrite) {
       setOverwriteConfirmOpen(true);
@@ -156,7 +161,7 @@ export default function App() {
     }
   };
 
-  // --- Poll job ---
+  // ---- Poll job ----
   const pollJob = async (jid: string) => {
     try {
       const job = await apiGetJob(jid);
@@ -191,7 +196,7 @@ export default function App() {
     } catch { /* swallow */ }
   };
 
-  // --- Retry ---
+  // ---- Retry ----
   const handleRetry = async () => {
     setRetrying(true);
     setFiles((prev) => prev.map((f) => f.status === "failed" ? { ...f, status: "pending" as const, error: undefined } : f));
@@ -201,7 +206,7 @@ export default function App() {
     handleStart();
   };
 
-  // --- Preview ---
+  // ---- Preview ----
   const handlePreview = async (result: JobResult) => {
     setPreviewResult(result);
     try {
@@ -211,23 +216,29 @@ export default function App() {
     } catch { setPreviewContent(t("error_api", lang)); }
   };
 
-  // --- Template ---
+  // ---- Template ----
   const handleSaveTemplate = () => { saveTemplate(settings); };
   const handleLoadTemplate = () => { const tpl = loadTemplate(); if (tpl) setSettings(tpl); };
 
-  // --- Download tracking ---
+  // ---- Download tracking ----
   const handleDownload = async (url: string, filename: string) => {
     setHasDownloaded(true);
     return apiDownloadFile(url, filename);
   };
 
-  // --- Derived ---
+  // ---- Derived ----
   const isConverting = jobPhase === "submitting" || jobPhase === "running";
   const hasPending = files.some((f) => f.status === "pending");
   const successCount = jobPhase === "done" ? results.length : 0;
   const failedCount = files.filter((f) => f.status === "failed").length;
   const showSkeleton = loadingState === "uploading" || loadingState === "converting";
 
+  // ---- Landing page ----
+  if (page === "landing") {
+    return <Landing onNavigateToConverter={() => setPage("converter")} />;
+  }
+
+  // ---- Converter tool ----
   return (
     <div className={`min-h-screen ${gradientBg} relative overflow-hidden`}>
       {/* Decorative blobs */}
@@ -240,6 +251,17 @@ export default function App() {
       <Header lang={lang} onLangChange={handleLangChange} onOpenHelp={() => setHelpOpen(true)} />
 
       <main className={`${container} pb-20 relative z-10`}>
+        {/* Back to landing */}
+        <button
+          onClick={() => setPage("landing")}
+          className="mb-4 inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-600 transition-colors"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          {lang === "zh" ? "返回首页" : "Back to home"}
+        </button>
+
         {/* Dashboard Stats */}
         <section className="mb-6">
           {showHistory ? (
@@ -386,6 +408,9 @@ export default function App() {
           </div>
         </div>
       </main>
+
+      {/* SEO-friendly static content */}
+      <SeoContent lang={lang} />
 
       {/* Help Center Drawer */}
       <HelpCenter

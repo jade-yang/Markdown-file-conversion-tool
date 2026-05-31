@@ -268,6 +268,32 @@ Then configure your host Nginx/Caddy to reverse proxy `md.906100.xyz → 127.0.0
 
 ---
 
+## SEO
+
+This project includes full SEO optimization:
+
+- **Meta tags** — title, description, keywords, canonical, Open Graph, Twitter Card in `web/index.html`
+- **Structured data** — `WebApplication` and `FAQPage` JSON-LD schemas
+- **hreflang** — multilingual support tags for zh-CN and en
+- **Static content** — `SeoContent.tsx` renders text-rich sections (formats, features, FAQ) for crawlers
+- **Static files** — `robots.txt`, `sitemap.xml`, `manifest.json` in `web/public/`
+
+### Verify after deployment
+
+```
+https://md.906100.xyz/robots.txt
+https://md.906100.xyz/sitemap.xml
+https://md.906100.xyz/manifest.json
+```
+
+### Submit to search engines
+
+- [Google Search Console](https://search.google.com/search-console)
+- [Bing Webmaster Tools](https://www.bing.com/webmasters)
+- [百度搜索资源平台](https://ziyuan.baidu.com/)
+
+---
+
 ## Troubleshooting
 
 ### 页面空白 (Blank page)

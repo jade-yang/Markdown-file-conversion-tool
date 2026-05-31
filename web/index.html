@@ -1,10 +1,120 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>web</title>
+
+    <!-- Primary SEO -->
+    <title>Markdown 文件转换工具 | DOCX PDF XLSX PPTX 转 Markdown</title>
+    <meta name="description" content="快速将 DOCX、PDF、XLSX、PPTX、TXT、MD 文件转换为 Markdown，支持批量转换、在线预览和结果下载。" />
+    <meta name="keywords" content="markdown converter, markdown 文件转换, docx to markdown, pdf to markdown, xlsx to markdown, pptx to markdown, office to markdown" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://md.906100.xyz/" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Markdown 文件转换工具 | Markdown Converter" />
+    <meta property="og:description" content="在线将 DOCX、PDF、XLSX、PPTX、TXT 文件转换为 Markdown，支持批量转换、预览和下载。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://md.906100.xyz/" />
+    <meta property="og:image" content="https://md.906100.xyz/og-image.png" />
+    <meta property="og:site_name" content="Markdown Converter" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Markdown Converter" />
+    <meta name="twitter:description" content="Convert Office documents to Markdown online." />
+    <meta name="twitter:image" content="https://md.906100.xyz/og-image.png" />
+
+    <!-- hreflang -->
+    <link rel="alternate" hreflang="zh-CN" href="https://md.906100.xyz/?lang=zh" />
+    <link rel="alternate" hreflang="en" href="https://md.906100.xyz/?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="https://md.906100.xyz/" />
+
+    <!-- Structured Data: WebApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Markdown Converter",
+      "alternateName": "Markdown 文件转换工具",
+      "url": "https://md.906100.xyz/",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "Web",
+      "description": "Convert DOCX, PDF, XLSX, PPTX, TXT and MD files to Markdown online.",
+      "inLanguage": ["zh-CN", "en"],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "DOCX to Markdown",
+        "PDF to Markdown",
+        "XLSX to Markdown",
+        "PPTX to Markdown",
+        "TXT to Markdown",
+        "Batch conversion",
+        "Markdown preview",
+        "ZIP download"
+      ]
+    }
+    </script>
+
+    <!-- Structured Data: FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What file formats are supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "DOCX, PDF, XLSX, PPTX, TXT, and MD files are supported."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I download the converted Markdown?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, you can download individual .md files or a ZIP bundle of all results."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it support batch conversion?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, you can upload and convert multiple files at once."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why might PDF to Markdown formatting be imperfect?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Complex PDF layouts depend on the original document structure. Tables and text are extracted on a best-effort basis."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to install any software?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No installation is needed — the tool runs entirely in your browser with a backend API."
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
