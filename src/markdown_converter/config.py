@@ -7,4 +7,4 @@ class ConvertOptions:
     output_dir: Path
     export_assets: bool = False
     recursive: bool = False
-    overwrite: bool = True
+    overwrite: bool = False

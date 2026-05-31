@@ -90,6 +90,24 @@ function getMockPreview(previewId: string): string | null {
 
 // ---- 真实 API ----
 
+/** Wraps fetch with auto-retry for transient network errors. */
+async function fetchWithRetry(url: string, init?: RequestInit, maxRetries = 2): Promise<Response> {
+  let lastErr: Error | null = null;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await fetch(url, init);
+      return res;
+    } catch (err: any) {
+      lastErr = err;
+      if (attempt < maxRetries) {
+        // Wait before retry: 500ms, then 1000ms
+        await new Promise((r) => setTimeout(r, (attempt + 1) * 500));
+      }
+    }
+  }
+  throw new Error(lastErr?.message || "Network request failed after retries");
+}
+
 async function realConvert(params: ConvertParams): Promise<ConvertResponse> {
   const form = new FormData();
   params.files.forEach((f) => form.append("files", f));
@@ -98,19 +116,22 @@ async function realConvert(params: ConvertParams): Promise<ConvertResponse> {
   form.append("zip_output", String(params.zipOutput));
   form.append("language", params.language);
 
-  const res = await fetch("/api/convert", { method: "POST", body: form });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const res = await fetchWithRetry("/api/convert", { method: "POST", body: form });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(res.status === 0 ? "Cannot connect to backend server. Make sure it is running on port 8000." : `Server error (${res.status})${text ? ": " + text : ""}`);
+  }
   return res.json();
 }
 
 async function realGetJob(jobId: string): Promise<JobStatus> {
-  const res = await fetch(`/api/jobs/${jobId}`);
+  const res = await fetchWithRetry(`/api/jobs/${jobId}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
 
 async function realGetPreview(previewId: string): Promise<string> {
-  const res = await fetch(`/api/preview/${previewId}`);
+  const res = await fetchWithRetry(`/api/preview/${previewId}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.text();
 }

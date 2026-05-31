@@ -82,6 +82,8 @@ def _run_conversion(
     job = _jobs[job_id]
     job.status = "running"
     job.logs.append("Starting conversion...")
+    if overwrite:
+        job.logs.append("[Warning] Overwrite mode enabled. Existing files will be replaced.")
 
     service = MarkdownConvertService()
     supported = SUPPORTED_EXTENSIONS
@@ -200,7 +202,7 @@ async def health():
 async def convert(
     files: list[UploadFile] = File(...),
     export_assets: bool = Form(False),
-    overwrite: bool = Form(True),
+    overwrite: bool = Form(False),
     zip_output: bool = Form(False),
     language: str = Form("en"),
 ):

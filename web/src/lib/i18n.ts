@@ -91,6 +91,14 @@ const translations = {
   // ---- Settings descriptions ----
   export_assets_desc:   { en: "Extract images to an assets folder", zh: "提取图片到 assets 目录" },
   overwrite_desc:       { en: "Replace existing output files", zh: "替换已有的输出文件" },
+  overwrite_warning:    { en: "Existing files will be replaced permanently.", zh: "如果目标文件已存在，将直接替换原文件。" },
+  overwrite_badge:      { en: "⚠ Destructive", zh: "⚠ 风险操作" },
+
+  // ---- Overwrite confirm dialog ----
+  overwrite_confirm_title: { en: "Overwrite Existing Files?", zh: "确认覆盖已有文件？" },
+  overwrite_confirm_desc:  { en: "Existing files with the same name will be replaced permanently. This may overwrite previous results.", zh: "转换过程中如果发现同名文件，将直接替换原文件。此操作可能导致原文件丢失。" },
+  overwrite_confirm_cancel:{ en: "Cancel", zh: "取消" },
+  overwrite_confirm_proceed:{ en: "Continue & Overwrite", zh: "继续覆盖" },
   zip_output_desc:      { en: "Bundle all results into a single ZIP file", zh: "将所有结果打包为单个 ZIP 文件" },
 
   // ---- Copy ----

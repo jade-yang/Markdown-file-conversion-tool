@@ -4,9 +4,14 @@ interface Props {
   checked: boolean;
   onChange: (v: boolean) => void;
   disabled?: boolean;
+  variant?: "default" | "danger";
 }
 
-export default function ToggleSwitch({ checked, onChange, disabled }: Props) {
+export default function ToggleSwitch({ checked, onChange, disabled, variant = "default" }: Props) {
+  const activeBg = variant === "danger"
+    ? "bg-gradient-to-r from-amber-500 to-rose-500"
+    : "bg-gradient-to-r from-blue-600 to-indigo-600";
+
   return (
     <button
       type="button"
@@ -15,9 +20,7 @@ export default function ToggleSwitch({ checked, onChange, disabled }: Props) {
       disabled={disabled}
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${focusRing} ${
-        checked
-          ? "bg-gradient-to-r from-blue-600 to-indigo-600"
-          : "bg-slate-300"
+        checked ? activeBg : "bg-slate-300"
       } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
     >
       <span

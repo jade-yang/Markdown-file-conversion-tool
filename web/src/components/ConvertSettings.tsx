@@ -26,20 +26,46 @@ export default function ConvertSettings({ lang, settings, onChange }: Props) {
   return (
     <div className="flex flex-col gap-2">
       <h3 className={sectionTitle}>{t("settings_title", lang)}</h3>
-      {items.map(({ key, labelKey, descKey }) => (
-        <div
-          key={key}
-          className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-50/80 transition-colors"
-        >
-          <div className="min-w-0 mr-4">
-            {/* @ts-expect-error dynamic key */}
-            <p className="text-sm text-slate-700">{t(labelKey, lang)}</p>
-            {/* @ts-expect-error dynamic key */}
-            <p className="text-xs text-slate-400 mt-0.5">{t(descKey, lang)}</p>
+      {items.map(({ key, labelKey, descKey }) => {
+        const isOverwrite = key === "overwrite";
+        const isOverwriteOn = isOverwrite && settings.overwrite;
+
+        return (
+          <div
+            key={key}
+            className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors ${
+              isOverwriteOn ? "bg-amber-50/80 border border-amber-200" : "hover:bg-slate-50/80"
+            }`}
+          >
+            <div className="min-w-0 mr-4">
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-slate-700">
+                  {/* @ts-expect-error dynamic key */}
+                  {t(labelKey, lang)}
+                </p>
+                {/* Warning badge for overwrite */}
+                {isOverwriteOn && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-700 border border-amber-200">
+                    {t("overwrite_badge" as any, lang)}
+                  </span>
+                )}
+              </div>
+              {/* Description changes when overwrite is on */}
+              <p className={`text-xs mt-0.5 ${isOverwriteOn ? "text-amber-600 font-medium" : "text-slate-400"}`}>
+                {isOverwriteOn
+                  ? t("overwrite_warning" as any, lang)
+                  : /* @ts-expect-error dynamic key */
+                    t(descKey, lang)}
+              </p>
+            </div>
+            <ToggleSwitch
+              checked={settings[key]}
+              onChange={() => toggle(key)}
+              variant={isOverwrite ? "danger" : "default"}
+            />
           </div>
-          <ToggleSwitch checked={settings[key]} onChange={() => toggle(key)} />
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
