@@ -1,0 +1,26 @@
+[project]
+name = "markdown-converter"
+version = "0.1.0"
+description = "Convert office documents and files to Markdown"
+requires-python = ">=3.9"
+dependencies = [
+    "python-docx>=1.1.0",
+    "openpyxl>=3.1.0",
+    "pymupdf>=1.24.0",
+    "pdfplumber>=0.11.0",
+    "python-pptx>=0.6.23",
+    "click>=8.1.0",
+    "PyQt6>=6.6.0",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0",
+    "python-multipart>=0.0.9",
+]
+
+[project.scripts]
+mdconvert = "markdown_converter.cli:main"
+mdconvert-gui = "markdown_converter.gui:main"
+mdconvert-gui-i18n = "markdown_converter.gui_multilang:main"
+mdconvert-web = "markdown_converter.web_api:run"
+
+[tool.setuptools.packages.find]
+where = ["src"]
