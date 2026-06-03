@@ -124,6 +124,11 @@ const translations = {
   empty_result_title:    { en: "No conversion results yet", zh: "暂无转换结果" },
   empty_result_desc:     { en: "After conversion, Markdown download links will appear here.", zh: "添加文件并开始转换后，Markdown 下载链接会显示在这里。" },
   empty_result_ready:    { en: 'Files are ready. Click "Start Conversion" to generate Markdown.', zh: '文件已准备好，点击「开始转换」生成 Markdown。' },
+
+  // ---- Mobile tips ----
+  mobile_tip_action:     { en: "Conversion button is below or tap me to jump", zh: "转换按钮在下方或点我跳转" },
+  preview_loading:       { en: "Loading preview...", zh: "正在加载预览…" },
+  preview_load_failed:   { en: "Failed to load preview. Please try downloading the file.", zh: "预览加载失败，请尝试下载文件。" },
 };
 
 type TranslationKey = keyof typeof translations;

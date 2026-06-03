@@ -11,6 +11,8 @@ import { SkeletonCard, SkeletonFileItem, SkeletonResultItem } from "./components
 import FeedbackModal from "./components/FeedbackModal";
 import HelpCenter from "./components/HelpCenter";
 import ToastContainer, { type ToastMessage } from "./components/Toast";
+import MobileUploadTip from "./components/MobileUploadTip";
+import { isMobileViewport } from "./lib/device";
 
 import Landing from "./pages/Landing";
 import Header from "./components/Header";
@@ -80,7 +82,9 @@ export default function App() {
       if (dup > 0) addToast("info", t("toast_duplicates", lang, { count: String(dup) }));
       if (bad > 0) addToast("warning", t("toast_partial", lang, { ok: String(added), bad: String(bad) }));
 
-      if (window.innerWidth < 1024 && added > 0) {
+      // Mobile: scroll + tip
+      if (isMobileViewport() && added > 0) {
+        setShowMobileTip(true);
         setTimeout(() => document.getElementById("file-list-section")?.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
       }
       return [...prev, ...unique];
@@ -110,6 +114,7 @@ export default function App() {
   const [loadingState, setLoadingState] = useState<"idle" | "uploading" | "converting">("idle");
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [overwriteConfirmOpen, setOverwriteConfirmOpen] = useState(false);
+  const [showMobileTip, setShowMobileTip] = useState(false);
 
   const [history, setHistory] = useState<HistoryEntry[]>(() => loadHistory());
   const [showHistory, setShowHistory] = useState(false);
@@ -156,7 +161,7 @@ export default function App() {
         setResults(job.results); setZipResult(job.zip_result || null);
         setFiles((prev) => prev.map((f) => ({ ...f, status: "success" as const })));
         setResultsHighlight(true); setTimeout(() => setResultsHighlight(false), 2000);
-        if (window.innerWidth < 1024) setTimeout(() => document.getElementById("results-section")?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
+        if (isMobileViewport()) setTimeout(() => document.getElementById("results-section")?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
         job.results.forEach((r) => addHistoryEntry({ id: r.id, fileName: r.file_name, fileSize: 0, ext: ".md", status: "success", resultUrl: r.download_url, previewUrl: r.preview_url, timestamp: Date.now() }));
         setHistory(loadHistory());
       } else if (job.status === "failed") {
@@ -177,6 +182,13 @@ export default function App() {
     setPreviewResult(r);
     try { const id = r.preview_url.split("/").pop()!; const c = await apiGetPreview(id); setPreviewContent(c || t("preview_empty", lang)); }
     catch { setPreviewContent(t("error_api", lang)); }
+
+    // Mobile: scroll to preview after content renders
+    if (isMobileViewport()) {
+      setTimeout(() => {
+        document.getElementById("markdown-preview-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 150);
+    }
   };
 
   const handleSaveTemplate = () => saveTemplate(settings);
@@ -262,7 +274,7 @@ export default function App() {
             <div className={`${cardNoHover} p-5`}><ConvertSettings lang={lang} settings={settings} onChange={setSettings} /></div>
 
             {/* 5. Action */}
-            <div className={`${cardNoHover} p-5`}>
+            <div id="action-panel-section" className={`${cardNoHover} p-5`}>
               {showSkeleton ? <SkeletonCard /> : <ActionPanel lang={lang} hasPending={hasPending} isConverting={isConverting} hasFiles={hasFiles} progress={progress} currentFile={currentFile} visible={isConverting || jobPhase === "done"} onStart={handleStart} onClear={clearFiles} />}
               {error && (
                 <div className="mt-4 px-4 py-3 bg-rose-50 border border-rose-200 rounded-xl">
@@ -278,7 +290,7 @@ export default function App() {
           </div>
 
           {/* Right column */}
-          <div className="col-span-12 lg:col-span-7">
+          <div id="markdown-preview-section" className="col-span-12 lg:col-span-7">
             <div className={`${cardNoHover} p-5 ${previewResult ? "" : "h-full flex items-center justify-center"}`}>
               {previewResult ? (
                 <MarkdownPreview lang={lang} content={previewContent} fileName={previewResult.file_name} onClose={() => { setPreviewResult(null); setPreviewContent(""); }} />
@@ -292,6 +304,15 @@ export default function App() {
 
       <SeoContent lang={lang} />
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+      <MobileUploadTip
+        open={showMobileTip}
+        lang={lang}
+        onClose={() => setShowMobileTip(false)}
+        onClick={() => {
+          document.getElementById("action-panel-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          setShowMobileTip(false);
+        }}
+      />
 
       <HelpCenter lang={lang} open={helpOpen} onClose={() => setHelpOpen(false)} hasUploaded={hasUploaded} hasConverted={hasConverted} hasDownloaded={hasDownloaded} onOpenFeedback={() => { setHelpOpen(false); setFeedbackOpen(true); }} />
       {feedbackOpen && <FeedbackModal lang={lang} />}
