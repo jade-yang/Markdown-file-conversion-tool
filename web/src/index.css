@@ -1,1 +1,45 @@
 @import "tailwindcss";
+
+@layer components {
+  .markdown-preview {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .markdown-preview pre {
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .markdown-preview code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .markdown-preview table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+  }
+
+  .markdown-preview th,
+  .markdown-preview td {
+    padding: 0.5rem;
+    border: 1px solid rgb(203 213 225);
+    word-break: break-word;
+    vertical-align: top;
+  }
+
+  .markdown-preview img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .markdown-preview a {
+    word-break: break-all;
+  }
+}

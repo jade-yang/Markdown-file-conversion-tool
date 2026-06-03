@@ -107,6 +107,23 @@ const translations = {
 
   // ---- Dropzone drag active ----
   dropzone_active:  { en: "Release to add files", zh: "释放以添加文件" },
+
+  // ---- Toast tips ----
+  toast_file_added:      { en: "1 file added", zh: "已添加 1 个文件" },
+  toast_files_added:     { en: "{count} files added", zh: "已添加 {count} 个文件" },
+  toast_ready:           { en: "Files are in the queue and ready to convert.", zh: "文件已进入队列，可开始转换。" },
+  toast_partial:         { en: "{ok} files added, {bad} unsupported files skipped.", zh: "已添加 {ok} 个文件，{bad} 个文件格式不支持。" },
+  toast_duplicates:      { en: "{count} duplicate files skipped", zh: "已跳过 {count} 个重复文件" },
+
+  // ---- FileList empty state ----
+  empty_file_title:      { en: "No files added yet", zh: "还没有添加文件" },
+  empty_file_desc:       { en: "Use the upload area below to select or drag files.", zh: "请在下方上传模块中选择或拖拽文件。" },
+  empty_file_action:     { en: "Go to Upload", zh: "前往上传" },
+
+  // ---- Result empty state ----
+  empty_result_title:    { en: "No conversion results yet", zh: "暂无转换结果" },
+  empty_result_desc:     { en: "After conversion, Markdown download links will appear here.", zh: "添加文件并开始转换后，Markdown 下载链接会显示在这里。" },
+  empty_result_ready:    { en: 'Files are ready. Click "Start Conversion" to generate Markdown.', zh: '文件已准备好，点击「开始转换」生成 Markdown。' },
 };
 
 type TranslationKey = keyof typeof translations;
